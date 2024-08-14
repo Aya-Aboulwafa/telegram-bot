@@ -3,7 +3,7 @@ import pandas as pd
 from langchain_ollama.llms import OllamaLLM
 
 # Load the cleaned CSV file using pandas for easier data manipulation
-df = pd.read_csv("Cleaned_data.csv")
+df = pd.read_csv("cleaneddata.csv")
 
 # Set up LLaMA 3.1:8B model and run on CPU
 llm = OllamaLLM(model="llama3.1")
