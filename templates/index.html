@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Summarizer</title>
+</head>
+<body>
+    <h1>Task Summarizer</h1>
+    <form method="post">
+        <label for="choice">Choose what you want to search:</label>
+        <select name="choice" id="choice" required>
+            <option value="1">Search by Sender Name</option>
+            <option value="2">Search by Specific Task</option>
+            <option value="3">Search for Task Journey of a Specific Task</option>
+            <option value="4">Search by Task Date</option>
+            <option value="5">Search by Team Name</option>
+            <option value="6">List reports of a specific name</option>
+        </select><br><br>
+
+        <label for="sender_name">Sender Name:</label>
+        <input type="text" id="sender_name" name="sender_name"><br><br>
+
+        <label for="task_name">Task Name:</label>
+        <input type="text" id="task_name" name="task_name"><br><br>
+
+        <label for="team_name">Team Name:</label>
+        <input type="text" id="team_name" name="team_name"><br><br>
+
+        <label for="task_date">Task Date (YYYY-MM-DD):</label>
+        <input type="text" id="task_date" name="task_date"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if result %}
+        <h2>Result:</h2>
+        <pre>{{ result }}</pre>
+    {% endif %}
+</body>
+</html>
