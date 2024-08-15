@@ -1,14 +1,15 @@
 import pandas as pd
 from langchain_ollama.llms import OllamaLLM
-import sys
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, CallbackContext, filters
 
-# Load the cleaned CSV file using pandas for easier data manipulation
-df = pd.read_csv("Cleaned_data.csv")
+# Load your cleaned CSV data
+df = pd.read_csv("cleaneddata.csv")
 
-# Set up LLaMA 3.1:8B model and run on CPU
-llm = OllamaLLM(model="llama3.1:8b")
+# Set up LLaMA model
+llm = OllamaLLM(model="llama3.1")
 
-# Function to create the prompt based on user choice
+# Function to create the prompt based on user input
 def create_prompt(choice, sender_name=None, task_name=None, team_name=None, task_date=None):
     filtered_messages = df.copy()
 
@@ -194,46 +195,81 @@ def create_prompt(choice, sender_name=None, task_name=None, team_name=None, task
 
     return prompt
 
-# Interactive query loop
-while True:
-    print("Choose what you want to search:")
-    print("1. Search by Sender Name")
-    print("2. Search by Specific Task")
-    print("3. Search for Task Journey of a Specific Task")
-    print("4. Search by Task Date")
-    print("5. Search by Team Name")
-    print("6. List reports of specific name")
-    choice = input("Enter your choice (1-5) or 'exit' to quit: ")
+# Start command to display buttons
+async def start(update: Update, context: CallbackContext) -> None:
+    keyboard = [
+        [InlineKeyboardButton("Search by Sender Name", callback_data='1')],
+        [InlineKeyboardButton("Search by Specific Task", callback_data='2')],
+        [InlineKeyboardButton("Search for Task Journey", callback_data='3')],
+        [InlineKeyboardButton("Search by Task Date", callback_data='4')],
+        [InlineKeyboardButton("Search by Team Name", callback_data='5')],
+        [InlineKeyboardButton("List reports of a specific name", callback_data='6')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Please choose an option:", reply_markup=reply_markup)
 
-    if choice.lower() == 'exit':
-        print('Exiting')
-        sys.exit()
+# Callback query handler to handle button clicks
+async def button_click(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    await query.answer()
+
+    context.user_data["choice"] = query.data
+
+    # Prompt the user to provide the required input based on their choice
+    if query.data == '1':
+        await query.edit_message_text("Please enter the sender name:")
+    elif query.data == '2':
+        await query.edit_message_text("Please enter the task name:")
+    elif query.data == '3':
+        await query.edit_message_text("Please enter the task name:")
+    elif query.data == '4':
+        await query.edit_message_text("Please enter the task date (format YYYY-MM-DD):")
+    elif query.data == '5':
+        await query.edit_message_text("Please enter the team name:")
+    elif query.data == '6':
+        await query.edit_message_text("Please enter the name:")
+
+# Handle text input from the user after they press a button
+async def handle_message(update: Update, context: CallbackContext) -> None:
+    user_message = update.message.text
+    choice = context.user_data.get("choice")
 
     sender_name = task_name = team_name = task_date = None
 
     if choice == '1':
-        sender_name = input("Enter sender name: ")
+        sender_name = user_message
     elif choice == '2':
-        task_name = input("Enter task name: ")
+        task_name = user_message
     elif choice == '3':
-        task_name = input("Enter task name: ")
+        task_name = user_message
     elif choice == '4':
-        task_date = input("Enter task date (format YYYY-MM-DD): ")
+        task_date = user_message
     elif choice == '5':
-        team_name = input("Enter team name: ")
+        team_name = user_message
     elif choice == '6':
-        sender_name = input("Enter the name: ")
-    else:
-        print("Invalid choice. Please select a valid option.")
-        continue
+        sender_name = user_message
 
-    # Create the prompt
+    # Create the prompt based on user input
     prompt = create_prompt(choice, sender_name, task_name, team_name, task_date)
+    response = llm(prompt)
 
-    # Debugging statements
-    print("Prompt Type:", type(prompt))
-    print("Prompt Content:", prompt[:500])  # Print the first 500 characters for brevity
+    # Send the response back to the user
+    await update.message.reply_text(response)
+    
+	# Send options again for another round of interaction
+    await start(update, context)
 
-    # Run the prompt through the LLM directly
-    result = llm(prompt)
-    print("Response: ", result)
+def main() -> None:
+    # Replace 'YOUR_TOKEN_HERE' with your bot's token
+    application = Application.builder().token("7478988236:AAEdP5QJmtu8oKw1Cnd9gGAzeQl-1EmUeiM").build()
+
+    # Register commands and handlers
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(button_click))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+    # Start the Bot
+    application.run_polling()
+
+if __name__ == "__main__":
+    main()

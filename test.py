@@ -1,16 +1,15 @@
-from flask import Flask, render_template, request,jsonify
 import pandas as pd
 from langchain_ollama.llms import OllamaLLM
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, CallbackContext, filters
 
-# Load the cleaned CSV file using pandas for easier data manipulation
+# Load your cleaned CSV data
 df = pd.read_csv("cleaneddata.csv")
 
-# Set up LLaMA 3.1:8B model and run on CPU
+# Set up LLaMA model
 llm = OllamaLLM(model="llama3.1")
 
-app = Flask(__name__)
-
-# Function to create the prompt based on user choice
+# Function to create the prompt based on user input
 def create_prompt(choice, sender_name=None, task_name=None, team_name=None, task_date=None):
     filtered_messages = df.copy()
 
@@ -196,43 +195,117 @@ def create_prompt(choice, sender_name=None, task_name=None, team_name=None, task
 
     return prompt
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    result = None
-    raw_output = None
-    if request.method == 'POST':
-        choice = request.form.get('choice')
-        sender_name = request.form.get('sender_name')
-        task_name = request.form.get('task_name')
-        team_name = request.form.get('team_name')
-        task_date = request.form.get('task_date')
+# Start command to display buttons
+async def start(update: Update, context: CallbackContext) -> None:
+    keyboard = [
+        [InlineKeyboardButton("Summarize All Reports of Member Team", callback_data='1')],
+        [InlineKeyboardButton("Summarize All Reports of Specific Task", callback_data='2')],
+        [InlineKeyboardButton("Search for Specific Task Journey", callback_data='3')],
+        [InlineKeyboardButton("Search by Task Date", callback_data='4')],
+        [InlineKeyboardButton("Search by Team Name Tasks", callback_data='5')],
+        [InlineKeyboardButton("List reports of a Member Team", callback_data='6')]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text("Please choose an option:", reply_markup=reply_markup)
 
-        # Create the prompt
-        prompt = create_prompt(choice, sender_name, task_name, team_name, task_date)
+# Callback query handler to handle button clicks
+async def button_click(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    await query.answer()
 
-        # Run the prompt through the LLM directly
-        result = llm(prompt)
-        raw_output = prompt  # Capture the prompt text for raw output
+    context.user_data["choice"] = query.data
 
-    return render_template('index.html', result=result, raw_output=raw_output)
+    # List of team members
+    team_members = [
+        "emmankh", "mahmouddiab01", "Mohamed_Said_97", "MohamedMansour1999",
+        "Nadanabil24", "AhmedKhalifaDev", "Shaimaedris9", "Loly_re",
+        "MahmoudMamdooh", "Amr_ElBerry", "MohamadElrayes", "ahmadsamir22",
+        "zeinabahmed_2", "OmarH_11", "Serag_Farghaly", "Astired",
+        "EdroSoli392", "Abd_Al_Rhman_Ragab", "M0_Bassam", "A_Abdelghaffar",
+        "ahmedUsamadev", "husyenn", "eslex0", "mmeweida", "mostafamasrya",
+        "AhmedEGabr", "MohamedElKoofy", "ahmed_hamdy25", "Mohammd_Nabil",
+        "آية", "Shaima", "آية أبوالوفا", "toaa", "Mahmoud", "Mohamed Bassam", "آلاء علي"
+    ]
 
-@app.route('/raw_output', methods=['GET'])
-def raw_output_page():
-    choice = request.args.get('choice')
-    sender_name = request.args.get('sender_name')
-    task_name = request.args.get('task_name')
-    team_name = request.args.get('team_name')
-    task_date = request.args.get('task_date')
+    if query.data == '6':
+        # Create buttons for each team member
+        keyboard = [[InlineKeyboardButton(member, callback_data=f"member_{member}")] for member in team_members]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.edit_message_text("Please choose a team member:", reply_markup=reply_markup)
+    else:
+        # Handle other choices as before
+        if query.data == '1':
+            await query.edit_message_text("Please enter the Member Team:")
+        elif query.data == '2':
+            await query.edit_message_text("Please enter the task name:")
+        elif query.data == '3':
+            await query.edit_message_text("Please enter the task name:")
+        elif query.data == '4':
+            await query.edit_message_text("Please enter the task date (format YYYY-MM-DD):")
+        elif query.data == '5':
+            await query.edit_message_text("Please enter the team name:")
 
-    # Create the prompt
+# Handle the new member selection
+async def handle_member_selection(update: Update, context: CallbackContext) -> None:
+    query = update.callback_query
+    await query.answer()
+
+    # Extract the selected member's name
+    member_name = query.data.replace("member_", "")
+    context.user_data["choice"] = '6'  # Choice for listing member's reports
+    query.edit_message_text(member_name)
+    # Create the prompt and get the report for the selected member
+    prompt = create_prompt('6', sender_name=member_name)
+    response = llm(prompt)
+
+    # Send the response back to the user
+    await query.edit_message_text(f"Reports for {member_name}:\n\n{response}")
+
+    # Send options again for another round of interaction
+    await start(update, context)
+
+# Handle text input from the user after they press a button
+async def handle_message(update: Update, context: CallbackContext) -> None:
+    user_message = update.message.text
+    choice = context.user_data.get("choice")
+
+    sender_name = task_name = team_name = task_date = None
+
+    if choice == '1':
+        sender_name = user_message
+    elif choice == '2':
+        task_name = user_message
+    elif choice == '3':
+        task_name = user_message
+    elif choice == '4':
+        task_date = user_message
+    elif choice == '5':
+        team_name = user_message
+    elif choice == '6':
+        sender_name = user_message
+
+    # Create the prompt based on user input
     prompt = create_prompt(choice, sender_name, task_name, team_name, task_date)
+    response = llm(prompt)
 
-    # Run the prompt through the LLM directly
-    result = llm(prompt)
-    return jsonify({
-        'prompt': prompt,
-        'result': result
-    })
+    # Send the response back to the user
+    await update.message.reply_text(response)
+
+    # Send options again for another round of interaction
+    await start(update, context)
+
+def main() -> None:
+    # Replace 'YOUR_TOKEN_HERE' with your bot's token
+    application = Application.builder().token("7478988236:AAEdP5QJmtu8oKw1Cnd9gGAzeQl-1EmUeiM").build()
+
+    # Register commands and handlers
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(button_click, pattern='^member_|^[1-6]$'))
+    application.add_handler(CallbackQueryHandler(handle_member_selection, pattern='^member_'))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+
+    # Start the Bot
+    application.run_polling()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    main()
