@@ -7,10 +7,7 @@ df = df.drop(columns=['image_url'])
 df =df.dropna()
 
 df = df[df['chat_title'] != '']
-
-
 df = df[df['message'] != '']
-
 df = df[df['message'] != '.']
 df = df[df['message'] != '/add_meeting']
 df= df[df['chat_title'] != 'testme']
