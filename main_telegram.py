@@ -198,12 +198,12 @@ def create_prompt(choice, sender_name=None, task_name=None, team_name=None, task
 # Start command to display buttons
 async def start(update: Update, context: CallbackContext) -> None:
     keyboard = [
-        [InlineKeyboardButton("Search by Sender Name", callback_data='1')],
-        [InlineKeyboardButton("Search by Specific Task", callback_data='2')],
-        [InlineKeyboardButton("Search for Task Journey", callback_data='3')],
+        [InlineKeyboardButton("Summeize All Reports of Member Team", callback_data='1')],
+        [InlineKeyboardButton("Summeize All Reports of Specific Task", callback_data='2')],
+        [InlineKeyboardButton("Search for Specific Task Journey", callback_data='3')],
         [InlineKeyboardButton("Search by Task Date", callback_data='4')],
-        [InlineKeyboardButton("Search by Team Name", callback_data='5')],
-        [InlineKeyboardButton("List reports of a specific name", callback_data='6')]
+        [InlineKeyboardButton("Search by Team Name Tasks", callback_data='5')],
+        [InlineKeyboardButton("List reports of a Member Team", callback_data='6')]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Please choose an option:", reply_markup=reply_markup)
@@ -217,7 +217,7 @@ async def button_click(update: Update, context: CallbackContext) -> None:
 
     # Prompt the user to provide the required input based on their choice
     if query.data == '1':
-        await query.edit_message_text("Please enter the sender name:")
+        await query.edit_message_text("Please enter the Member Team:")
     elif query.data == '2':
         await query.edit_message_text("Please enter the task name:")
     elif query.data == '3':
