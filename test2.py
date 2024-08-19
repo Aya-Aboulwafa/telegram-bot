@@ -30,173 +30,138 @@ def create_prompt(choice, sender_name=None, task_name=None, team_name=None, task
 
     combined_messages = "\n".join(filtered_messages['message'].astype(str).tolist())
 
-    # Prompts based on choices
+    # Ensure combined_messages is not None
+    if combined_messages is None:
+        combined_messages = "No messages available."
+
+    # Construct prompt based on choice
     if choice == '1':
         prompt = f"""
         Example:
-        Response: Here is a summary of all the messages sent by '{sender_name}':
+        Response: Below is a summary of the messages sent by '{sender_name}':
 
         Overall Summary:
+        {sender_name} has been actively involved in various tasks and collaborations. Their efforts have contributed significantly to the project, showcasing a blend of technical skills and team cooperation.
 
-        {sender_name} has been working on various tasks related to designing and developing different screens and features for an application. They have been attending daily meetings with R&D and Dev teams, receiving feedback from colleagues, and implementing changes based on that feedback.
+        Specific Contributions:
 
-        Specific Tasks and Achievements:
+        * Participated in key tasks related to design, development, and implementation.
+        * Engaged with team members to resolve issues and enhance workflows.
+        * Continuously updated skills and applied them effectively in ongoing projects.
 
-        * Designed and implemented screens using Material 3 (e.g., room limited reached, calendar format, filter & quick actions, action screen, running meeting screen)
-        * Resolved git issues with a team member
-        * Attended multiple review and audit sessions with colleagues
-        * Learned Tailwind CSS and used it to design home and calendar tab screens
-        * Designed subscription tab with different states using Shadcn UI
-        * Redesigned recording tab and share record options using Shadcn
-        * Created a system design for the V Chat app
+        Key Collaborations:
 
-        Key Meetings and Discussions:
+        * Worked closely with various team members to ensure project goals were met.
+        * Regularly attended meetings to discuss progress and plan future tasks.
 
-        * Held extensive meetings with Masreya, Abdallah, Toqaa, Serag, and Abdelghafaur to discuss various topics related to the application's flow and design
-        * Participated in quick discussions with colleagues to solve issues or clarify doubts
-        * Developed a plan for August tasks and regularly reviewed progress
+        Skills and Knowledge Gained:
 
-        Skills and Knowledge Acquired:
-
-        * Learned Material 3, Tailwind CSS, and Shadcn UI
-        * Improved their understanding of the application's flow and design principles
+        * Acquired and applied new skills, contributing to personal and team growth.
 
         Summarize all tasks assigned to '{sender_name}':\n\nMessages:\n{combined_messages}"""
+
     elif choice == '2':
         prompt = f"""
         Example:
-        Response: Here is a summary of all activities related to the task '{task_name}':
+        Response: Below is a summary of activities related to the task '{task_name}':
 
         Task Overview:
 
-        The task '{task_name}' was initiated to improve the user experience on the calendar screen. The goal was to implement a new filtering system that would allow users to quickly navigate to specific dates.
+        The task '{task_name}' was initiated to address a key area of the project, with a focus on improving specific features or components.
 
-        Steps Taken:
+        Key Actions:
 
-        * Conducted initial research on user needs and identified key features for the filter system.
-        * Designed the UI/UX for the filter system and reviewed it with the design team.
-        * Implemented the filter system using Material 3 and integrated it into the existing calendar component.
-        * Tested the filter system with various data sets to ensure it worked correctly.
+        * Researched and identified critical aspects to be addressed.
+        * Designed and implemented solutions in line with project goals.
+        * Collaborated with relevant teams to ensure smooth integration and functionality.
 
-        Collaborations:
+        Collaborative Efforts:
 
-        * Worked closely with the UX team to ensure the filter system met user expectations.
-        * Coordinated with the backend team to ensure data flow between the calendar and filter components was seamless.
-
-        Current Status:
-
-        The task '{task_name}' has been successfully completed, with all initial goals met. The filter system is now live and has received positive feedback from users.
+        * Worked with various teams to align task outcomes with project requirements.
 
         Summarize all activities related to the task '{task_name}':\n\nMessages:\n{combined_messages}"""
+
     elif choice == '3':
         prompt = f"""
         Example:
-        Response: Here is a detailed overview of the task journey for '{task_name}':
+        Response: The following is a summary of the task journey for '{task_name}':
 
         Task Journey:
 
-        The task '{task_name}' began as a high-priority item due to its impact on the overall user experience. It required a significant overhaul of the existing navigation system.
+        The task '{task_name}' was undertaken to make significant improvements to an important aspect of the project, requiring careful planning and execution.
 
         Planning Phase:
 
-        * Identified the need for a more intuitive navigation system after user feedback indicated confusion with the current layout.
-        * Conducted several brainstorming sessions with the design team to explore potential solutions.
-        * Finalized a design that would simplify the navigation process while maintaining all existing functionality.
+        * Identified key challenges and outlined potential solutions.
+        * Collaborated with the team to refine the approach.
 
         Execution:
 
-        * Broke down the task into smaller, manageable components and assigned them to relevant team members.
-        * Implemented the new navigation system in stages, starting with the main menu and moving to submenus.
-        * Regularly reviewed progress with the team and made adjustments as needed to stay on schedule.
+        * Implemented the task in phases, ensuring continuous progress.
+        * Monitored and adjusted the approach as needed to stay on track.
 
         Review and Iteration:
 
-        * Conducted multiple testing rounds to ensure the new system worked seamlessly across all devices.
-        * Gathered feedback from a small group of users and made iterative improvements based on their experiences.
+        * Conducted thorough reviews and iterations to refine the final product.
 
         Completion:
 
-        The task '{task_name}' was successfully completed with all objectives met. The new navigation system is now live and has been well-received by users.
+        The task '{task_name}' was successfully completed, meeting all objectives.
 
         Describe the overall task journey for '{task_name}':\n\nMessages:\n{combined_messages}"""
+
     elif choice == '4':
         prompt = f"""
         Example:
-        Response: Here are the details of tasks performed on '{task_date}':
+        Response: Below is an overview of activities on '{task_date}':
 
         Overview of the Day:
 
-        On '{task_date}', the focus was on finalizing the design for the application's notification system and addressing several bugs reported in the previous version.
+        On '{task_date}', several tasks were completed, contributing to the overall progress of the project.
 
-        Tasks Completed:
+        Completed Tasks:
 
-        * Finalized the UI/UX design for the notification system and reviewed it with the design team.
-        * Fixed bugs related to the message display issue in the chat module.
-        * Coordinated with the QA team to verify the bug fixes and ensure no new issues were introduced.
-
-        Challenges:
-
-        * Encountered a challenge with the notification system design not being compatible with older devices. Worked closely with the development team to find a workaround.
+        * Focused on key areas that needed attention, ensuring they were addressed effectively.
+        * Collaborated with the team to verify the completion of tasks.
 
         Team Interactions:
 
-        * Had a meeting with the QA team to discuss the bugs and prioritize the ones that needed immediate attention.
-        * Reviewed the notification system design with the product manager and made necessary adjustments.
+        * Engaged in discussions and meetings to align on priorities and next steps.
 
         Provide details about tasks on '{task_date}':\n\nMessages:\n{combined_messages}"""
+
     elif choice == '5':
         prompt = f"""
         Example:
-        Response: Here is a summary of tasks associated with the team '{team_name}':
+        Response: Below is a summary of tasks completed by the '{team_name}' team:
 
         Team Overview:
 
-        The '{team_name}' team is responsible for the development and maintenance of the application's core features. Recently, they have been focusing on enhancing the user experience across multiple platforms.
+        The '{team_name}' team has been responsible for key aspects of the project, driving progress in critical areas.
 
-        Key Tasks:
+        Major Contributions:
 
-        * Implemented a new authentication system that allows users to log in using their social media accounts.
-        * Redesigned the settings page to provide a more intuitive and user-friendly interface.
-        * Fixed critical bugs reported in the Android version of the application.
-
-        Collaborations:
-
-        * Worked closely with the UX team to ensure the new settings page met user expectations.
-        * Coordinated with the backend team to integrate the new authentication system seamlessly.
-
-        Achievements:
-
-        * Successfully reduced the login time by 30% with the new authentication system.
-        * Received positive feedback from users on the redesigned settings page.
+        * Focused on enhancing specific features and ensuring smooth project execution.
+        * Collaborated with other teams to integrate new developments seamlessly.
 
         Summarize tasks related to the team '{team_name}':\n\nMessages:\n{combined_messages}"""
+
     elif choice == '6':
         prompt = f"""
         Example:
-        Response: Here is a list of tasks associated with '{sender_name}':
+        Response: Below is a summary of tasks associated with '{sender_name}':
 
-        list Tasks  for {sender_name}:
-        
+        Summary of Tasks:
 
-        * Designed and implemented the user profile page, ensuring it was fully responsive across all devices.
-        * Collaborated with the QA team to identify and fix issues related to the notification system.
-        * Participated in brainstorming sessions for the upcoming feature release, providing valuable insights based on user feedback.
+        * Actively contributed to various aspects of the project, focusing on key deliverables.
+        * Collaborated with the team to resolve issues and enhance performance.
 
-        
-        * Worked with the development team to optimize the application's performance, resulting in a 20% improvement in load times.
-        * Held regular meetings with the design team to ensure the user profile page aligned with the overall design vision.
+        Summarize all tasks by '{sender_name}':\n\nMessages:\n{combined_messages}"""
 
-
-        * Enhanced knowledge of responsive design techniques and best practices.
-        * Gained experience in cross-team collaboration and project management.
-
-        List tasks with time by '{sender_name}':\n\nMessages:\n{combined_messages}"""
     else:
         prompt = "Invalid choice. Please select a valid option."
 
-
     return prompt
-
 
 # Start command to display buttons
 async def start(update: Update, context: CallbackContext) -> None:
@@ -215,9 +180,6 @@ async def start(update: Update, context: CallbackContext) -> None:
     elif update.callback_query:
         await update.callback_query.edit_message_text("Please choose an option:", reply_markup=reply_markup)
 
-
-
-
 # Callback query handler to handle button clicks
 async def button_click(update: Update, context: CallbackContext) -> None:
     query = update.callback_query
@@ -227,7 +189,6 @@ async def button_click(update: Update, context: CallbackContext) -> None:
 
     if choice in ['1', '6']:
         context.user_data["choice"] = choice
-
 
         senders = df['sender'].unique()
         keyboard = []
@@ -243,59 +204,56 @@ async def button_click(update: Update, context: CallbackContext) -> None:
         
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.edit_message_text("Please select a sender:", reply_markup=reply_markup)
+
     elif choice.startswith('sender_'):
         sender_name = choice.split('sender_')[1]
         context.user_data['sender_name'] = sender_name
 
-
-        #retrive stored choice
+        # Retrieve stored choice
         stored_choice = context.user_data.get("choice")
 
-        #log selected sender & choice
+        # Log selected sender & choice
         print(f"Sender Name: {sender_name}")
         print(f"Stored Choice: {stored_choice}")
 
-        #Generate promt
+        # Generate prompt
         prompt = create_prompt(stored_choice, sender_name=sender_name)
 
-        #log generated prompt
-        print(f"Generated Prompt: {prompt}")
+        # Check if prompt is valid
+        if not prompt:
+            prompt = "The prompt could not be generated. Please try again."
 
+        # Get response from LLM
+        try:
+            response = llm(prompt)
+        except Exception as e:
+            response = f"An error occurred: {e}"
 
-        #get responce from LLM
-        response = llm(prompt)
+        # Log the response
+        print(f"Response: {response}")
 
-
-        #log the response
-        print(f"Respose: {response}")
-
-
-        #send respose to the user
+        # Send response to the user
         await query.message.reply_text(response)
+
         keyboard = [
             [InlineKeyboardButton("Choose another option", callback_data='choose_again')],
             [InlineKeyboardButton("End conversation", callback_data='end_conversation')]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await query.message.reply_text("Would you like to choose another option or end the conversation?", reply_markup=reply_markup)
+
     elif choice == 'choose_again':
         # Restart the conversation
         await start(update, context)
+
     elif choice == 'end_conversation':
         # End the conversation with a farewell message
         await query.message.reply_text("Thank you! If you need anything else, feel free to start a new conversation.")
+
     else:
         # Handle other cases where choice might not be a sender selection
         context.user_data["choice"] = choice
         await query.edit_message_text("Please provide the required input:")
-
-        #Ask if user want other option
-        # await start(update, context)
-    # else:
-    #     # Handle other cases 
-    #     context.user_data["choice"] = choice
-    #     await query.edit_message_text("Please provide the required input:")
-
 
 def main() -> None:
     # Replace 'YOUR_TOKEN_HERE' with your bot's token
@@ -305,8 +263,8 @@ def main() -> None:
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(button_click))
 
-    # Start the Bot
+    # Run the bot
     application.run_polling()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
