@@ -58,7 +58,14 @@ df['message_thread_id'] = df['message_thread_id'].replace({
 # Handle any null values in message_thread_id
 df['message_thread_id'] = df['message_thread_id'].fillna('Meetings & General Conversations')
 
+
+
+df_filtered = df[~df['sender'].isin(['Mahmoud', 'Mohamed Elgammal', 'Magid', 'Ahmed Usama', 'AhmedEGabr'])]
+
 # Save the cleaned data
-df.to_csv('cleaneddata.csv', index=False)
+df_filtered.to_csv('cleaneddata.csv', index=False)
+
 
 print("Final row count:", len(df))
+print("Final row count:", len(df_filtered))
+
