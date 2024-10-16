@@ -36,22 +36,22 @@ for col in df.columns:
 
 # Preprocess the message_thread_id column
 df['message_thread_id'] = df['message_thread_id'].replace({
-    12: 'Knowledge',
-    3: 'Communication',
-    31: 'Affiliate',
-    42: 'Reservation & Productivity',
-    9: 'Quality',
-    11: 'Project (coordination)',
-    8: 'SaaS',
-    5: 'Developer Ecosystem',
-    153: 'Workspace (ERB) & Analytics',
-    7: 'Apps (Mobile & Desktop)',
-    4: 'Learning & Customer',
-    13: 'AI',
-    10: 'DevOps',
-    14: 'Group insights',
-    374: 'Training and development',
-    675: 'Announcement',
+    '12.0': 'Knowledge',
+    '3.0': 'Communication',
+    '31.0': 'Affiliate',
+    '42.0': 'Reservation & Productivity',
+    '9.0': 'Quality',
+    '11.0': 'Project (coordination)',
+    '8.0': 'SaaS',
+    '5.0': 'Developer Ecosystem',
+    '153.0': 'Workspace (ERB) & Analytics',
+    '7.0': 'Apps (Mobile & Desktop)',
+    '4.0': 'Learning & Customer',
+    '13.0': 'AI',
+    '10.0': 'DevOps',
+    '14.0': 'Group insights',
+    '374.0': 'Training and development',
+    '675.0': 'Announcement',
     None: 'Meetings & General Conversations'
 })
 
@@ -60,7 +60,7 @@ df['message_thread_id'] = df['message_thread_id'].fillna('Meetings & General Con
 
 
 
-df_filtered = df[~df['sender'].isin(['Mahmoud', 'Mohamed Elgammal', 'Magid', 'Ahmed Usama', 'AhmedEGabr'])]
+df_filtered = df[~df['sender'].isin(['Mahmoud', 'Mohamed Elgammal', 'Magid', 'Ahmed Usama', 'AhmedEGabr','toaa','Mahmoud Mamdouh','Ahmad Samir','Mohamed Ramadan','Mohamed El Koofy'])]
 
 # Save the cleaned data
 df_filtered.to_csv('cleaneddata.csv', index=False)
@@ -68,3 +68,4 @@ df_filtered.to_csv('cleaneddata.csv', index=False)
 
 print("Final row count:", len(df))
 print("Final row count:", len(df_filtered))
+

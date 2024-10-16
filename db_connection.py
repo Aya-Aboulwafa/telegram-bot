@@ -33,5 +33,3 @@ finally:
 # Perform some basic analysis (optional)
 print(df.describe())
 print(df.head())
-
-
